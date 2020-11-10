@@ -1,0 +1,27 @@
+{
+  "name": "impossibletictactoe-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "webpack-dev-server"
+  },
+  "dependencies": {
+    "impossibletictactoe": "^0.1.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gbaranski/impossibletictactoe.git"
+  },
+  "author": "gbaranski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gbaranski/impossibletictactoe/issues"
+  },
+  "homepage": "https://github.com/gbaranski/impossibletictactoe#readme"
+}
