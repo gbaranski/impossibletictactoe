@@ -53,6 +53,47 @@ impl fmt::Display for GameStatus {
     }
 }
 
+fn is_winning(dcs: CellState) -> bool {
+    unsafe {
+        // Cross top left to bottom right
+        if CELLS[0] == dcs && CELLS[4] == dcs && CELLS[8] == dcs {
+            return true;
+        // Cross top right to bottom left
+        } else if CELLS[2] == dcs && CELLS[4] == dcs && CELLS[6] == dcs {
+            return true;
+        // Vertical top left to bottom left
+        } else if CELLS[0] == dcs && CELLS[3] == dcs && CELLS[6] == dcs {
+            return true;
+        // Vertical middle top  to middle bottom
+        } else if CELLS[1] == dcs && CELLS[4] == dcs && CELLS[7] == dcs {
+            return true;
+        // Vertical top right to bottom right
+        } else if CELLS[2] == dcs && CELLS[5] == dcs && CELLS[8] == dcs {
+            return true;
+        // Horizontal top left to top right
+        } else if CELLS[0] == dcs && CELLS[1] == dcs && CELLS[2] == dcs {
+            return true;
+        // Horizontal middle left to middle right
+        } else if CELLS[3] == dcs && CELLS[4] == dcs && CELLS[5] == dcs {
+            return true;
+        // Horizontal bottom left to bottom right
+        } else if CELLS[6] == dcs && CELLS[7] == dcs && CELLS[8] == dcs {
+            return true;
+        }
+    }
+    return false;
+}
+
+#[wasm_bindgen]
+pub fn get_game_status() -> String {
+    if is_winning(CellState::X) {
+        return GameStatus::WON.to_string().into();
+    } else if is_winning(CellState::O) {
+        return GameStatus::LOST.to_string().into();
+    }
+    return GameStatus::PENDING.to_string().into();
+}
+
 #[wasm_bindgen]
 pub fn make_move() -> String {
     unsafe {
