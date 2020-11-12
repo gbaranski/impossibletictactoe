@@ -11,6 +11,7 @@ enum GameState {
   Pending,
   Won,
   Lost,
+  Draw,
 }
 
 let gameState = GameState.Pending;
