@@ -52,6 +52,7 @@ const moveEnemy = (cells: NodeListOf<Element>, wasm: wasmImportType): void => {
   const res = wasm.move_enemy(
     new Int32Array(parseCellsToCellStateArray(cells))
   );
+  console.log(`Calculated move: ${res}`);
   cells[res].innerHTML = "O";
 };
 

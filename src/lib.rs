@@ -1,18 +1,21 @@
 use num_derive::FromPrimitive;
-use num_traits::FromPrimitive;
 use wasm_bindgen::prelude::*;
 
 #[derive(FromPrimitive, PartialEq, Copy, Clone)]
 enum CellState {
-    X = -1,
+    Human = -1,
     Empty = 0,
-    O = 1,
+    AI = 1,
 }
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     pub fn log(s: &str);
+
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn log_i32(a: i32);
+
 }
 
 type Board = Vec<i32>;
@@ -47,55 +50,56 @@ fn is_winner(board: &Board, cell_state: CellState) -> bool {
 }
 
 fn get_winner(board: &Board) -> CellState {
-    if is_winner(board, CellState::X) {
-        return CellState::X;
-    } else if is_winner(board, CellState::O) {
-        return CellState::O;
+    if is_winner(board, CellState::Human) {
+        return CellState::Human;
+    } else if is_winner(board, CellState::AI) {
+        return CellState::AI;
     }
     return CellState::Empty;
 }
 
 fn get_opponent(player: CellState) -> CellState {
-    if player == CellState::X {
-        return CellState::O;
-    } else if player == CellState::O {
-        return CellState::X;
+    if player == CellState::AI {
+        return CellState::Human;
+    } else {
+        return CellState::AI;
     }
-
-    return CellState::Empty;
 }
 
-fn are_moves_left(board: &Board) -> bool {
-    for i in 0..board.len() {
-        let cell_state: CellState =
-            FromPrimitive::from_i32(board[i]).expect("Couln't convert primitite to Cell State");
-        if cell_state == CellState::Empty {
-            return true;
+fn minimax(board: &Board, player: CellState) -> i32 {
+    let winner = get_winner(board);
+    if winner != CellState::Empty {
+        if winner == player {
+            return 1;
+        } else {
+            return -1;
         }
     }
-    return false;
-}
 
-fn minimax(board: &Board, depth: i32, is_maximizing_player: bool) -> i32 {
-    if get_winner(board) ==
+    let mut move_val: i32 = -1;
+    let mut score = -2;
 
+    for i in 0..9 {
+        if board[i] == CellState::Empty as i32 {
+            // log_i32(i as i32);
+            let mut new_board = board.clone();
+            new_board[i] = player as i32;
+            let score_for_move = -minimax(&new_board, get_opponent(player));
+            if score_for_move > score {
+                score = score_for_move;
+                move_val = i as i32;
+            }
+        }
+    }
+
+    if move_val == -1 {
+        return 0;
+    }
+    return move_val;
 }
 
 #[wasm_bindgen]
-pub fn move_enemy(board: Board) -> Option<i32> {
-    let new_move: i32 = minimax(&board, CellState::X as i32);
-    log(&format!("Move: {}", new_move));
-
-    let mut i = 0;
-    for cell in board {
-        let cell_state: CellState =
-            FromPrimitive::from_i32(cell).expect("Could not convert primitive to CellState");
-
-        if cell_state == CellState::Empty {
-            return Some(i);
-        }
-
-        i = i + 1;
-    }
-    return None;
+pub fn move_enemy(board: Board) -> i32 {
+    let new_move: i32 = minimax(&board, CellState::AI);
+    return new_move;
 }
