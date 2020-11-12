@@ -1,2 +1,2 @@
 # impossibletictactoe
-Tic tac toe made in Rust
+Impossible to beat tic tac toe game made in Rust using WebAssembly.
