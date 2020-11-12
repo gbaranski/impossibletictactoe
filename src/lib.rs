@@ -124,5 +124,4 @@ fn minimax(board: &Board, player: CellState) -> MoveScore {
 pub fn move_enemy(board: Board) -> JsValue {
     let res = minimax(&board, CellState::AI);
     return JsValue::from_str(&serde_json::to_string(&res).unwrap());
-    // return JsValue::from_serde(&res).unwrap();
 }

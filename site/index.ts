@@ -18,6 +18,7 @@ let gameState = GameState.Pending;
 const cells = document.querySelectorAll(".cell");
 const botPredictText = document.querySelector("#bot-predict");
 const calcTime = document.querySelector("#calc-duration");
+const restartBtn = document.querySelector("#restartBtn");
 
 const parseCellsToCellStateArray = (
   cells: NodeListOf<Element>
@@ -57,7 +58,7 @@ interface MoveScore {
   move_val: number;
 }
 
-const moveEnemy = (cells: NodeListOf<Element>, wasm: wasmImportType): void => {
+const moveEnemy = (wasm: wasmImportType): void => {
   const t1 = performance.now();
   const res = JSON.parse(
     wasm.move_enemy(new Int32Array(parseCellsToCellStateArray(cells)))
@@ -82,14 +83,26 @@ const onGameStateChange = (newGameState: GameState) => {
   gameState = newGameState;
 };
 
-const clickCallback = (cells: NodeListOf<Element>, wasm: wasmImportType) => {
+const clickCallback = (wasm: wasmImportType) => {
   if (hasWon(cells, "X")) onGameStateChange(GameState.Won);
 
-  moveEnemy(cells, wasm);
+  moveEnemy(wasm);
   if (hasWon(cells, "O")) onGameStateChange(GameState.Lost);
 };
 
+const startGame = () => {
+  cells.forEach((cell) => {
+    cell.innerHTML = "";
+  });
+  gameState = GameState.Pending;
+};
+
 wasmImport.then((wasm) => {
+  restartBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    startGame();
+  });
+  startGame();
   cells.forEach((cell, i) => {
     cell.addEventListener("click", (e) => {
       e.preventDefault();
@@ -98,7 +111,7 @@ wasmImport.then((wasm) => {
       }
 
       cells[i].innerHTML = "X";
-      clickCallback(cells, wasm);
+      clickCallback(wasm);
     });
   });
 

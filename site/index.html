@@ -24,11 +24,16 @@
         text-align: center;
         font-size: x-large;
       }
+      #restartBtn {
+        display: block;
+        margin: auto;
+      }
     </style>
   </head>
   <body>
-    <p class="info-text">Bot predict: <span id="bot-predict"></span></p>
+    <p class="info-text">Bot predict: <span id="bot-predict">You lose</span></p>
     <p class="info-text">Calculation duration: <span id="calc-duration"></span></p>
+    <button id="restartBtn">Restart</button>
     <div class="game--container">
       <div data-cell-index="0" class="cell"></div>
       <div data-cell-index="1" class="cell"></div>
