@@ -15,6 +15,8 @@ enum GameState {
 }
 
 let gameState = GameState.Pending;
+const cells = document.querySelectorAll(".cell");
+const botPredictText = document.querySelector("#bot-predict");
 
 const parseCellsToCellStateArray = (
   cells: NodeListOf<Element>
@@ -60,6 +62,14 @@ const moveEnemy = (cells: NodeListOf<Element>, wasm: wasmImportType): void => {
   ) as MoveScore;
   console.log(`Calculated move: ${res}`);
   console.log(res);
+  botPredictText.innerHTML =
+    res.score === -1
+      ? "Your win"
+      : res.score === 0
+      ? "Draw"
+      : res.score === 1
+      ? "Your lose"
+      : "unknown";
   cells[res.move_val].innerHTML = "O";
 };
 
@@ -76,8 +86,6 @@ const clickCallback = (cells: NodeListOf<Element>, wasm: wasmImportType) => {
 };
 
 wasmImport.then((wasm) => {
-  const cells = document.querySelectorAll(".cell");
-
   cells.forEach((cell, i) => {
     cell.addEventListener("click", (e) => {
       e.preventDefault();
