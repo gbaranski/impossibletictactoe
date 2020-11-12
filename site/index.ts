@@ -49,7 +49,6 @@ const hasWon = (cells: NodeListOf<Element>, player: "X" | "O"): boolean => {
   if (arr[1] === player && arr[4] === player && arr[7] === player) return true;
   // Column 3
   if (arr[2] === player && arr[5] === player && arr[8] === player) return true;
-
   return false;
 };
 
@@ -78,18 +77,6 @@ const moveEnemy = (wasm: wasmImportType): void => {
   cells[res.move_val].innerHTML = "O";
 };
 
-const onGameStateChange = (newGameState: GameState) => {
-  console.log(Object.values(GameState)[newGameState]);
-  gameState = newGameState;
-};
-
-const clickCallback = (wasm: wasmImportType) => {
-  if (hasWon(cells, "X")) onGameStateChange(GameState.Won);
-
-  moveEnemy(wasm);
-  if (hasWon(cells, "O")) onGameStateChange(GameState.Lost);
-};
-
 const startGame = () => {
   cells.forEach((cell) => {
     cell.innerHTML = "";
@@ -98,24 +85,19 @@ const startGame = () => {
 };
 
 wasmImport.then((wasm) => {
-  restartBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    startGame();
-  });
+  restartBtn.addEventListener("click", startGame);
   startGame();
   cells.forEach((cell, i) => {
     cell.addEventListener("click", (e) => {
-      e.preventDefault();
       if (gameState !== GameState.Pending) {
         return console.log("Game already over!");
       }
-
       if (cells[i].innerHTML === "") {
         cells[i].innerHTML = "X";
-        clickCallback(wasm);
+        if (hasWon(cells, "X")) gameState = GameState.Won;
+        moveEnemy(wasm);
+        if (hasWon(cells, "O")) gameState = GameState.Lost;
       }
     });
   });
-
-  console.log(wasm);
 });
