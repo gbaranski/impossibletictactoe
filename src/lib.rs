@@ -76,17 +76,28 @@ fn get_opponent(player: CellState) -> CellState {
     }
 }
 
-fn minimax(board: &Board, player: CellState) -> i32 {
+struct MoveScore {
+    score: i32,
+    move_val: Option<i32>,
+}
+
+fn minimax(board: &Board, player: CellState) -> MoveScore {
     let winner = get_winner(board);
     if winner != CellState::Empty {
         if winner == player {
-            return 1;
+            return MoveScore {
+                score: 1,
+                move_val: None,
+            };
         } else {
-            return -1;
+            return MoveScore {
+                score: -1,
+                move_val: None,
+            };
         }
     }
 
-    let mut move_val: i32 = -1;
+    let mut move_val: Option<i32> = None;
     let mut score = -2;
 
     for i in 0..9 {
@@ -94,22 +105,26 @@ fn minimax(board: &Board, player: CellState) -> i32 {
             // log_i32(i as i32);
             let mut new_board = board.clone();
             new_board[i] = player as i32;
-            let score_for_move = -minimax(&new_board, get_opponent(player));
+            let score_for_move = -minimax(&new_board, get_opponent(player)).score;
             if score_for_move > score {
                 score = score_for_move;
-                move_val = i as i32;
+                move_val = Some(i as i32);
             }
         }
     }
 
-    if move_val == -1 {
-        return 0;
+    if move_val == None {
+        return MoveScore { score: 0, move_val };
     }
-    return move_val;
+    return MoveScore { score, move_val };
 }
 
 #[wasm_bindgen]
-pub fn move_enemy(board: Board) -> i32 {
-    let new_move: i32 = minimax(&board, CellState::AI);
-    return new_move;
+pub fn move_enemy(board: Board) -> Option<i32> {
+    let res = minimax(&board, CellState::AI);
+    unsafe {
+        log(&format!("Score: {}", res.score));
+        log(&format!("MoveVal: {:?}", res.move_val));
+    }
+    return res.move_val;
 }
