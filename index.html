@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>hello-wasm example</title>
+    <style>
+      .game--container {
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        width: 306px;
+        margin: 50px auto;
+      }
+      .cell {
+        width: 100px;
+        height: 100px;
+        box-shadow: 0 0 0 1px #333333;
+        border: 1px solid #333333;
+        cursor: pointer;
+        line-height: 100px;
+        font-size: 60px;
+        text-align: center;
+      }
+      .info-text {
+        text-align: center;
+        font-size: x-large;
+      }
+      #restartBtn {
+        display: block;
+        margin: auto;
+      }
+      footer {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="info-text">Bot predict: <span id="bot-predict">You lose</span></p>
+    <p class="info-text">Calculation duration: <span id="calc-duration"></span></p>
+    <button id="restartBtn">Restart</button>
+    <div class="game--container">
+      <div data-cell-index="0" class="cell"></div>
+      <div data-cell-index="1" class="cell"></div>
+      <div data-cell-index="2" class="cell"></div>
+      <div data-cell-index="3" class="cell"></div>
+      <div data-cell-index="4" class="cell"></div>
+      <div data-cell-index="5" class="cell"></div>
+      <div data-cell-index="6" class="cell"></div>
+      <div data-cell-index="7" class="cell"></div>
+      <div data-cell-index="8" class="cell"></div>
+    </div>
+    <script src="./bundle.js"></script>
+
+    <footer>
+      <p>
+        Made in WebAssembly and Rust by <a href="https://github.com/gbaranski" target="__blank">gbaranski</a>
+      </p>
+      <p>
+        Source code available on <a href="https://github.com/gbaranski/impossibletictactoe" target="__blank">here</a>
+      </p>
+    </footer>
+  </body>
+</html>
