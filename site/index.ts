@@ -55,7 +55,7 @@ const hasWon = (cells: NodeListOf<Element>, player: "X" | "O"): boolean => {
 
 interface MoveScore {
   score: number;
-  move_val: number;
+  move_val: number | null;
 }
 
 const moveEnemy = (wasm: wasmImportType): void => {
@@ -64,8 +64,7 @@ const moveEnemy = (wasm: wasmImportType): void => {
     wasm.move_enemy(new Int32Array(parseCellsToCellStateArray(cells)))
   ) as MoveScore;
   const t2 = performance.now();
-  console.log(`Calculated move: ${res}`);
-  console.log(res);
+  console.log("Calculated move: ", res);
   botPredictText.innerHTML =
     res.score === -1
       ? "Your win"
@@ -75,6 +74,7 @@ const moveEnemy = (wasm: wasmImportType): void => {
       ? "Your lose"
       : "unknown";
   calcTime.innerHTML = `${(t2 - t1).toPrecision(2)}ms`;
+  if (res.move_val === null) return;
   cells[res.move_val].innerHTML = "O";
 };
 
@@ -110,8 +110,10 @@ wasmImport.then((wasm) => {
         return console.log("Game already over!");
       }
 
-      cells[i].innerHTML = "X";
-      clickCallback(wasm);
+      if (cells[i].innerHTML === "") {
+        cells[i].innerHTML = "X";
+        clickCallback(wasm);
+      }
     });
   });
 
