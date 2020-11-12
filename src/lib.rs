@@ -123,10 +123,6 @@ fn minimax(board: &Board, player: CellState) -> MoveScore {
 #[wasm_bindgen]
 pub fn move_enemy(board: Board) -> JsValue {
     let res = minimax(&board, CellState::AI);
-    unsafe {
-        log(&format!("Score: {}", res.score));
-        log(&format!("MoveVal: {:?}", res.move_val));
-    }
     return JsValue::from_str(&serde_json::to_string(&res).unwrap());
     // return JsValue::from_serde(&res).unwrap();
 }

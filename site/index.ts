@@ -17,6 +17,7 @@ enum GameState {
 let gameState = GameState.Pending;
 const cells = document.querySelectorAll(".cell");
 const botPredictText = document.querySelector("#bot-predict");
+const calcTime = document.querySelector("#calc-duration");
 
 const parseCellsToCellStateArray = (
   cells: NodeListOf<Element>
@@ -57,9 +58,11 @@ interface MoveScore {
 }
 
 const moveEnemy = (cells: NodeListOf<Element>, wasm: wasmImportType): void => {
+  const t1 = performance.now();
   const res = JSON.parse(
     wasm.move_enemy(new Int32Array(parseCellsToCellStateArray(cells)))
   ) as MoveScore;
+  const t2 = performance.now();
   console.log(`Calculated move: ${res}`);
   console.log(res);
   botPredictText.innerHTML =
@@ -70,6 +73,7 @@ const moveEnemy = (cells: NodeListOf<Element>, wasm: wasmImportType): void => {
       : res.score === 1
       ? "Your lose"
       : "unknown";
+  calcTime.innerHTML = `${(t2 - t1).toPrecision(2)}ms`;
   cells[res.move_val].innerHTML = "O";
 };
 
