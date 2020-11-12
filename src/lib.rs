@@ -1,4 +1,5 @@
 use num_derive::FromPrimitive;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 #[derive(FromPrimitive, PartialEq, Copy, Clone)]
@@ -17,8 +18,13 @@ extern "C" {
     fn log_i32(a: i32);
 
 }
-
 type Board = Vec<i32>;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct MoveScore {
+    pub score: i32,
+    pub move_val: Option<i32>,
+}
 
 fn is_winner(board: &Board, cell_state: CellState) -> bool {
     let dcs = cell_state as i32;
@@ -76,11 +82,6 @@ fn get_opponent(player: CellState) -> CellState {
     }
 }
 
-struct MoveScore {
-    score: i32,
-    move_val: Option<i32>,
-}
-
 fn minimax(board: &Board, player: CellState) -> MoveScore {
     let winner = get_winner(board);
     if winner != CellState::Empty {
@@ -120,11 +121,12 @@ fn minimax(board: &Board, player: CellState) -> MoveScore {
 }
 
 #[wasm_bindgen]
-pub fn move_enemy(board: Board) -> Option<i32> {
+pub fn move_enemy(board: Board) -> JsValue {
     let res = minimax(&board, CellState::AI);
     unsafe {
         log(&format!("Score: {}", res.score));
         log(&format!("MoveVal: {:?}", res.move_val));
     }
-    return res.move_val;
+    return JsValue::from_str(&serde_json::to_string(&res).unwrap());
+    // return JsValue::from_serde(&res).unwrap();
 }

@@ -49,12 +49,18 @@ const hasWon = (cells: NodeListOf<Element>, player: "X" | "O"): boolean => {
   return false;
 };
 
+interface MoveScore {
+  score: number;
+  move_val: number;
+}
+
 const moveEnemy = (cells: NodeListOf<Element>, wasm: wasmImportType): void => {
-  const res = wasm.move_enemy(
-    new Int32Array(parseCellsToCellStateArray(cells))
-  );
+  const res = JSON.parse(
+    wasm.move_enemy(new Int32Array(parseCellsToCellStateArray(cells)))
+  ) as MoveScore;
   console.log(`Calculated move: ${res}`);
-  cells[res].innerHTML = "O";
+  console.log(res);
+  cells[res.move_val].innerHTML = "O";
 };
 
 const onGameStateChange = (newGameState: GameState) => {
