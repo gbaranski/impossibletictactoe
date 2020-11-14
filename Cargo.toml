@@ -1,9 +1,11 @@
 [package]
 name = "impossibletictactoe"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["gbaranski <gbaranski19@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/gbaranski/impossibletictactoe"
+description = "Unbeatable Tic Tac Toe package with minimax algorithm"
+license = "MIT"
 
 [lib]
 crate-type = ["cdylib"]
